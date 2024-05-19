@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv").config();
-const db = require("./database");
+const pool = require("./database");
 
 const app = express();
 app.use(cors());
@@ -89,11 +89,4 @@ app.delete("/delete/:tableName/:id", async (req, res) => {
 });
 
 const PORT = process.env.PORT;
-
-const server = async () => {
-  //   const result = await db.raw("SELECT 1");
-  console.log("database connected");
-  app.listen(PORT, () => console.log(`App is running on port ${PORT}`));
-};
-
-server();
+app.listen(PORT, () => console.log(`App is running on port ${PORT}`));
