@@ -8,6 +8,23 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// Describe Table
+app.get("/describeTable/:tableName", async (req, res) => {
+  const { tableName } = req.params;
+  const query = `
+      SELECT column_name as "fieldName", data_type as "type"
+      FROM information_schema.columns
+      WHERE table_name = $1 AND column_name != 'id';
+    `;
+  try {
+    const result = await pool.query(query, [tableName]);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Failed to describe table");
+  }
+});
+
 // Create Table
 app.post("/define", async (req, res) => {
   const { tableName, fields } = req.body; // Expect fields to be an array of { fieldName, type }
